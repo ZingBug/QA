@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zingbug.qa.dao.LoginTicketDao">
+    <sql id="TABLE">
+        login_ticket
+    </sql>
+
+    <sql id="FIELDS">
+        id,user_id userId,ticket,expired,status
+    </sql>
+
+    <insert id="addLoginTicket" parameterType="com.zingbug.qa.pojo.LoginTicket" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="TABLE"></include>
+        (id,user_id,ticket,expired,status)
+        value (#{id},#{userId},#{ticket},#{expired,jdbcType=TIMESTAMP},#{status})
+    </insert>
+
+    <select id="selectByTicket" parameterType="java.lang.String" resultType="com.zingbug.qa.pojo.LoginTicket">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where ticket=#{ticket}
+    </select>
+
+
+    <update id="updateStatus">
+        update <include refid="TABLE"></include>
+        <set >
+            status=#{status}
+        </set>
+        <where>
+            ticket=#{ticket}
+        </where>
+    </update>
+
+    <delete id="deleteByTicket" parameterType="java.lang.String">
+        delete from <include refid="TABLE"></include>
+        where ticket=#{ticket}
+    </delete>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zingbug.qa.dao.FeedDao">
+    <sql id="TABLE">
+        feed
+    </sql>
+
+    <sql id="FIELDS">
+        id,user_id userId,create_date createDate,data,type
+    </sql>
+
+    <insert id="addFeed" parameterType="com.zingbug.qa.pojo.Feed" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="TABLE"></include>
+        (id,user_id,create_date,data,type)
+        value (#{id},#{userId},#{createDate,jdbcType=TIMESTAMP},#{data},#{type})
+    </insert>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.zingbug.qa.pojo.Feed">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where id=#{id}
+    </select>
+
+    <select id="selectFeedsByUser" resultType="com.zingbug.qa.pojo.Feed">
+        select
+        <include refid="FIELDS"></include>
+        from
+        <include refid="TABLE"></include>
+
+        WHERE id &lt; #{maxId}
+
+        <if test="userIds.size()!=0">
+            AND user_id in
+            <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY id DESC
+        LIMIT #{count}
+    </select>
+
+</mapper>

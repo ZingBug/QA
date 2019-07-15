@@ -1,0 +1,39 @@
+<div th:replace="header" xmlns:th="http://www.w3.org/1999/xhtml"></div>
+<link rel="stylesheet" href="/styles/letter.css">
+    <div id="main">
+        <div class="zg-wrap zu-main clearfix ">
+            <ul class="letter-list" th:each="conversation:${conversations}">
+                <li id="conversation-item-10001_622873">
+                <a class="letter-link" th:href="'/msg/detail?conversationId='+${conversation.get('conversation').conversationId}">
+                </a>
+                <div class="letter-info">
+                <span class="l-time" th:text="${#dates.format(conversation.get('conversation').createDate,'yyyy-MM-dd HH:mm:ss')}"></span>
+                <div class="l-operate-bar">
+
+                <a th:href="'/msg/detail?conversationId='+${conversation.get('conversation').conversationId}" th:text="${conversation.get('conversation').id}">
+                </a>
+
+                </div>
+                </div>
+                <div class="chat-headbox">
+                <span class="msg-num" th:text="${conversation.get('unread')}">
+                </span>
+                <a class=" avatar list-head">
+                <img alt="头像" th:src="${conversation.get('user').headUrl}">
+                </a>
+                </div>
+                <div class="letter-detail">
+                <a title="${conversation.get('user').name}" class="letter-name level-color-1" th:text="${conversation.get('user').name}">
+                </a>
+                <p class="letter-brief">
+                <a th:href="'/msg/detail?conversationId='+${conversation.get('conversation').conversationId}"
+                   th:text="${conversation.get('conversation').content}">
+                </a>
+                </p>
+                </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+<div th:replace="js"></div>
+<div th:replace="footer" xmlns:th="http://www.w3.org/1999/xhtml"></div>

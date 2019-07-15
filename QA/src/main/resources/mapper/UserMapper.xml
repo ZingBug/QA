@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zingbug.qa.dao.UserDao">
+
+    <sql id="TABLE">
+        user
+    </sql>
+
+    <sql id="FIELDS">
+        id,name,password,salt,head_url headUrl
+    </sql>
+
+    <insert id="addUser" parameterType="com.zingbug.qa.pojo.User" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="TABLE"></include>
+        (id,name,password,salt,head_url)
+        value (#{id},#{name},#{password},#{salt},#{headUrl})
+    </insert>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.zingbug.qa.pojo.User">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where id=#{id}
+    </select>
+
+    <select id="selectByName" parameterType="java.lang.String" resultType="com.zingbug.qa.pojo.User">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where name=#{name}
+    </select>
+
+    <update id="updateById" parameterType="com.zingbug.qa.pojo.User">
+        update <include refid="TABLE"></include>
+        <set >
+            <if test="name != null">
+                name=#{name}
+            </if>
+            <if test="password != null">
+                password=#{password}
+            </if>
+            <if test="salt != null">
+                salt=#{salt}
+            </if>
+            <if test="headUrl != null">
+                head_url=#{headUrl}
+            </if>
+        </set>
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from <include refid="TABLE"></include>
+        where id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zingbug.qa.dao.MessageDao">
+
+    <sql id="TABLE">
+        message
+    </sql>
+
+    <sql id="FIELDS">
+        id,from_id fromId,to_id toId,content,create_date creatDate,has_read hasRead,conversation_id conversataionId
+    </sql>
+
+    <insert id="addMessage" parameterType="com.zingbug.qa.pojo.Message" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="TABLE"></include>
+        (id,from_id,to_id,content,create_date,has_read,conversation_id)
+        value (#{id},#{fromId},#{toId},#{content},#{createDate,jdbcType=TIMESTAMP},#{hasRead},#{conversationId})
+    </insert>
+
+
+    <select id="getConversationDetail" resultType="com.zingbug.qa.pojo.Message">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where conversation_id=#{conversationId}
+        order by create_date desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="getConversationUnreadCount" resultType="java.lang.Integer">
+        select
+        count(id)
+        from <include refid="TABLE"></include>
+        where has_read=0 and to_id=#{userId} and conversation_id=#{conversationId}
+    </select>
+
+    <select id="getConversationList" resultType="com.zingbug.qa.pojo.Message">
+        select
+        count(id) as id,
+        from_id fromId,to_id toId,content,create_date createDate,has_read hasRead,conversation_id conversationId
+        from (
+        select * from 
+        <include refid="TABLE"></include>
+        where from_id=#{userId} or to_id=#{userId}
+        order by create_date desc limit 999999
+        ) tt
+        group by conversation_id
+        order by create_date desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <update id="updateHasRead">
+        update <include refid="TABLE"></include>
+        <set >
+            has_read=#{hasRead}
+        </set>
+        <where>
+            conversation_id=#{conversationId}
+        </where>
+    </update>
+
+
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zingbug.qa.dao.CommentDao">
+
+    <sql id="TABLE">
+        comment
+    </sql>
+
+    <sql id="FIELDS">
+        id,user_id userId,content,create_date createDate,entity_id entityId,entity_type entityType,status
+    </sql>
+
+    <insert id="addComment" parameterType="com.zingbug.qa.pojo.Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="TABLE"></include>
+        (id,user_id,content,create_date,entity_id,entity_type,status)
+        value (#{id},#{userId},#{content},#{createDate,jdbcType=TIMESTAMP},#{entityId},#{entityType},#{status})
+    </insert>
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.zingbug.qa.pojo.Comment">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where id=#{id}
+    </select>
+
+    <select id="selectByEntity" resultType="com.zingbug.qa.pojo.Comment">
+        select
+        <include refid="FIELDS"></include>
+        from <include refid="TABLE"></include>
+        where entity_id=#{entityId} and entity_type=#{entityType}
+        order by id desc
+    </select>
+
+    <select id="getCommentCount" resultType="java.lang.Integer">
+        select
+        count(id)
+        from <include refid="TABLE"></include>
+        where entity_id=#{entityId} and entity_type=#{entityType}
+    </select>
+
+    <select id="getCommentCountByUser" resultType="java.lang.Integer">
+        select
+        count(id)
+        from <include refid="TABLE"></include>
+        where user_id=#{userId}
+    </select>
+
+    <update id="updateStatus">
+        update <include refid="TABLE"></include>
+        <set >
+            status=#{status}
+        </set>
+        <where>
+            entity_id=#{entityId} and entity_type=#{entityType}
+        </where>
+    </update>
+
+
+</mapper>
